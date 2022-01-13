@@ -1,5 +1,7 @@
 import React from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
+const EventbriteButton = dynamic(() => import("react-eventbrite-popup-checkout"), { ssr: false });
 
 // i18n
 import { useTranslation } from "next-i18next";
@@ -25,9 +27,7 @@ const Home = () => {
         <meta name="description" content="home des" />
       </Head>
 
-      <div className={Styles["page"]}>
-        <h1>{t("Hello World!")} </h1>
-      </div>
+      <div className={Styles["page"]}>{typeof window !== "undefined" && <EventbriteButton ebEventId="236438954277">Checkout</EventbriteButton>}</div>
     </>
   );
 };
