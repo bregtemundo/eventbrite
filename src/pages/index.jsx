@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 const EventbriteButton = dynamic(() => import("react-eventbrite-popup-checkout"), { ssr: false });
+import eventbrite from "eventbrite";
 
 // i18n
 import { useTranslation } from "next-i18next";
@@ -11,7 +12,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Styles from "./index.module.scss";
 
 // Page Component
-const Home = () => {
+const Home = ({ events }) => {
   /**
    * i18n:
    */
@@ -26,16 +27,37 @@ const Home = () => {
         <title>Home | Next starter</title>
         <meta name="description" content="home des" />
       </Head>
-
-      <div className={Styles["page"]}>{typeof window !== "undefined" && <EventbriteButton ebEventId="236438954277">Checkout</EventbriteButton>}</div>
+      <div className={Styles["page"]}>
+        {events.map((event) => {
+          return (
+            <div>
+              <h2>{event.name.html}</h2>
+              <p>{event.summary}</p>
+              <EventbriteButton ebEventId={event.id}>Checkout</EventbriteButton>
+            </div>
+          );
+        })}
+      </div>
     </>
   );
 };
 
-// Load Translations
 export async function getStaticProps({ locale }) {
+  const sdk = eventbrite({ token: "OIOUH4MNLRFX6Z7PZQ6G" });
+  //https://www.eventbrite.com/o/40047371923
+
+  // test: get org ids
+  /*
+  sdk.request("/users/me/organizations/").then((res) => {
+    console.log(res);
+  });
+  */
+
+  const { events } = await sdk.request("/organizations/767644255693/events/");
+
   return {
     props: {
+      events: events,
       ...(await serverSideTranslations(locale, ["common"])),
     },
   };
