@@ -28,9 +28,9 @@ const Home = ({ events }) => {
         <meta name="description" content="home des" />
       </Head>
       <div className={Styles["page"]}>
-        {events.map((event) => {
+        {events.map((event, index) => {
           return (
-            <div>
+            <div key={index}>
               <h2>{event.name.html}</h2>
               <p>{event.summary}</p>
               <EventbriteButton ebEventId={event.id}>Checkout</EventbriteButton>
